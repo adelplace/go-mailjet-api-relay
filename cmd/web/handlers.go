@@ -1,8 +1,6 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
 )
 
@@ -12,13 +10,6 @@ type contact struct {
 	subject string
 	message string
 }
-
-type captcha struct {
-	Secret   string `json:"secret"`
-	Response string `json:"response"`
-}
-
-const captchaSecret = "secret"
 
 func (app *application) index(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -54,25 +45,4 @@ func (app *application) index(w http.ResponseWriter, r *http.Request) {
 	app.sendMail(contact)
 
 	app.renderSuccess(w, "The email has been sent")
-}
-
-func (app *application) checkCaptcha(captchaResponse string) (response bool) {
-	captcha := captcha{
-		Secret:   captchaSecret,
-		Response: captchaResponse,
-	}
-	resp, err := app.httpClient.Get(fmt.Sprintf(app.reCaptchaURL, captcha.Secret, captcha.Response))
-	if err != nil {
-		app.logError(err)
-		return false
-	}
-
-	var googleResponse struct {
-		Success bool `json:"success"`
-	}
-
-	defer resp.Body.Close()
-	json.NewDecoder(resp.Body).Decode(&googleResponse)
-
-	return googleResponse.Success
 }
