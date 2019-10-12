@@ -18,8 +18,7 @@ type captcha struct {
 	Response string `json:"response"`
 }
 
-const captchaURL = "https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s"
-const captchaSecret = ""
+const captchaSecret = "secret"
 
 func (app *application) index(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -42,7 +41,7 @@ func (app *application) index(w http.ResponseWriter, r *http.Request) {
 
 	googleResponse := app.checkCaptcha(captchaResponse)
 	if !googleResponse {
-		app.renderError(w, "Captcha is invalid", "invalid_captcha", http.StatusBadGateway)
+		app.renderError(w, "Captcha is invalid", "invalid_captcha", http.StatusBadRequest)
 		return
 	}
 
@@ -62,7 +61,7 @@ func (app *application) checkCaptcha(captchaResponse string) (response bool) {
 		Secret:   captchaSecret,
 		Response: captchaResponse,
 	}
-	resp, err := http.Get(fmt.Sprintf(captchaURL, captcha.Secret, captcha.Response))
+	resp, err := app.httpClient.Get(fmt.Sprintf(app.reCaptchaURL, captcha.Secret, captcha.Response))
 	if err != nil {
 		app.logError(err)
 		return false

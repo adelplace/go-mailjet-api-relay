@@ -1,21 +1,20 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
+	"strings"
 	"testing"
 
 	"github.com/matryer/is"
 )
 
-func sendEndpointRequest(is *is.I, method string, data interface{}) (*response, *httptest.ResponseRecorder) {
-	buffer := bytes.NewBufferString("")
-	req, err := http.NewRequest(method, "/", buffer)
-	is.NoErr(err)
+func sendEndpointRequest(app *application, is *is.I, method string, data *url.Values) (*response, *httptest.ResponseRecorder) {
+	req := httptest.NewRequest(method, "/", strings.NewReader(data.Encode()))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
-	app := application{}
 	w := httptest.NewRecorder()
 	app.index(w, req)
 
@@ -28,8 +27,9 @@ func sendEndpointRequest(is *is.I, method string, data interface{}) (*response, 
 func TestWrongMethod(t *testing.T) {
 	is := is.New(t)
 
-	var data struct{}
-	response, recorder := sendEndpointRequest(is, http.MethodGet, data)
+	data := &url.Values{}
+	app := &application{}
+	response, recorder := sendEndpointRequest(app, is, http.MethodGet, data)
 
 	is.Equal(recorder.Code, http.StatusMethodNotAllowed)
 	is.Equal(response.Code, "method_not_allowed")
@@ -39,10 +39,33 @@ func TestWrongMethod(t *testing.T) {
 func TestNoCaptcha(t *testing.T) {
 	is := is.New(t)
 
-	var data struct{}
-	response, recorder := sendEndpointRequest(is, http.MethodPost, data)
+	data := &url.Values{}
+	app := &application{}
+	response, recorder := sendEndpointRequest(app, is, http.MethodPost, data)
 
 	is.Equal(recorder.Code, http.StatusBadRequest)
 	is.Equal(response.Code, "no_captcha")
+	is.Equal(response.Success, false)
+}
+
+func TestInvalidCaptchaFailed(t *testing.T) {
+	is := is.New(t)
+	mockHandler := func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+		w.Write([]byte(`{"success":false}`))
+	}
+
+	server := httptest.NewServer(http.HandlerFunc(mockHandler))
+	defer server.Close()
+
+	data := &url.Values{}
+	data.Add("g-recaptcha-response", "fakeToken")
+	app := newApplication()
+	app.httpClient = server.Client()
+	app.reCaptchaURL = server.URL + "?a=%s&b=%s"
+	response, recorder := sendEndpointRequest(app, is, http.MethodPost, data)
+
+	is.Equal(response.Code, "invalid_captcha")
+	is.Equal(recorder.Code, http.StatusBadRequest)
 	is.Equal(response.Success, false)
 }

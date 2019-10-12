@@ -9,28 +9,38 @@ import (
 )
 
 type application struct {
-	errorLog *log.Logger
-	infoLog  *log.Logger
+	errorLog     *log.Logger
+	infoLog      *log.Logger
+	httpClient   *http.Client
+	reCaptchaURL string
 }
 
 func main() {
-	errorLog := log.New(os.Stdout, "ERROR ", log.Ldate|log.Ltime)
-	infoLog := log.New(os.Stdout, "INFO ", log.Ldate|log.Ltime|log.Lshortfile)
-
-	app := &application{
-		errorLog: errorLog,
-		infoLog:  infoLog,
-	}
+	app := newApplication()
 
 	addr := flag.String("addr", ":8080", "HTTP network adress")
 	flag.Parse()
 	srv := &http.Server{
 		Addr:     *addr,
-		ErrorLog: errorLog,
+		ErrorLog: app.errorLog,
 		Handler:  app.routes(),
 	}
 
 	fmt.Println("Listening")
 	err := srv.ListenAndServe()
-	errorLog.Fatal(err)
+	app.errorLog.Fatal(err)
+}
+
+func newApplication() *application {
+	errorLog := log.New(os.Stdout, "ERROR ", log.Ldate|log.Ltime)
+	infoLog := log.New(os.Stdout, "INFO ", log.Ldate|log.Ltime|log.Lshortfile)
+
+	httpClient := http.DefaultClient
+
+	return &application{
+		errorLog:     errorLog,
+		infoLog:      infoLog,
+		httpClient:   httpClient,
+		reCaptchaURL: "https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s",
+	}
 }
