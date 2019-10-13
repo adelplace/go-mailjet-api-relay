@@ -4,11 +4,7 @@ import (
 	"github.com/mailjet/mailjet-apiv3-go"
 )
 
-const privateKey = ""
-const publicKey = ""
-
 func (app *application) sendMail(contact *contact) error {
-	mailjetClient := mailjet.NewMailjetClient(publicKey, privateKey)
 	messagesInfo := []mailjet.InfoMessagesV31{
 		mailjet.InfoMessagesV31{
 			From: &mailjet.RecipientV31{
@@ -32,7 +28,7 @@ func (app *application) sendMail(contact *contact) error {
 		},
 	}
 	messages := mailjet.MessagesV31{Info: messagesInfo}
-	res, err := mailjetClient.SendMailV31(&messages)
+	res, err := app.mailjetClient.SendMailV31(&messages)
 
 	if err != nil {
 		app.errorLog.Printf("Error: %v\n", err)

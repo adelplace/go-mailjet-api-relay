@@ -6,13 +6,16 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/mailjet/mailjet-apiv3-go"
 )
 
 type application struct {
-	errorLog     *log.Logger
-	infoLog      *log.Logger
-	httpClient   *http.Client
-	reCaptchaURL string
+	errorLog      *log.Logger
+	infoLog       *log.Logger
+	httpClient    *http.Client
+	mailjetClient *mailjet.Client
+	reCaptchaURL  string
 }
 
 func main() {
@@ -38,9 +41,10 @@ func newApplication() *application {
 	httpClient := http.DefaultClient
 
 	return &application{
-		errorLog:     errorLog,
-		infoLog:      infoLog,
-		httpClient:   httpClient,
-		reCaptchaURL: "https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s",
+		errorLog:      errorLog,
+		infoLog:       infoLog,
+		httpClient:    httpClient,
+		mailjetClient: mailjet.NewMailjetClient("", ""),
+		reCaptchaURL:  "https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s",
 	}
 }
