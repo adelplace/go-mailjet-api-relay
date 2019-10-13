@@ -3,7 +3,6 @@ package main
 import (
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"testing"
 
 	"github.com/matryer/is"
@@ -33,16 +32,14 @@ func TestCaptcha(t *testing.T) {
 	is := is.New(t)
 
 	app := newApplication()
-	data := &url.Values{}
-	data.Add("g-recaptcha-response", "fakeToken")
 
-	serverSuccess := mockCaptchaRequest(app, false)
+	serverSuccess := mockCaptchaRequest(app, true)
 	defer serverSuccess.Close()
 
-	is.Equal(app.checkCaptcha("fakeCaptcha"), false)
+	is.Equal(app.checkCaptcha("fakeCaptcha"), true)
 
-	serverFail := mockCaptchaRequest(app, true)
+	serverFail := mockCaptchaRequest(app, false)
 	defer serverFail.Close()
 
-	is.Equal(app.checkCaptcha("fakeCaptcha"), true)
+	is.Equal(app.checkCaptcha("fakeCaptcha"), false)
 }

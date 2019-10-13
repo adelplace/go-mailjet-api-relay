@@ -42,7 +42,11 @@ func (app *application) index(w http.ResponseWriter, r *http.Request) {
 		subject: r.PostForm.Get("subject"),
 		message: r.PostForm.Get("message"),
 	}
-	app.sendMail(contact)
+	err = app.sendMail(contact)
+	if err != nil {
+		app.renderError(w, "An error occured, please retry later", "mailjet_error", http.StatusBadRequest)
+		return
+	}
 
 	app.renderSuccess(w, "The email has been sent")
 }
