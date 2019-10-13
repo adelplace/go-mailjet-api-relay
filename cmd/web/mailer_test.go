@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -10,24 +11,35 @@ import (
 	"github.com/mailjet/mailjet-apiv3-go"
 )
 
+func mockSendMailFunc(fail bool) func(req *http.Request) (*http.Response, error) {
+	var err error
+	if fail {
+		err = errors.New("Error")
+	}
+	return func(req *http.Request) (*http.Response, error) {
+		responseRecorder := httptest.NewRecorder()
+		responseRecorder.Write([]byte(`{"Messages": []}`))
+		return responseRecorder.Result(), err
+	}
+}
 func TestSendMail(t *testing.T) {
 	is := is.New(t)
 	app := newApplication()
 	httpClientMocked := mailjet.NewhttpClientMock(true)
 	smtpClientMocked := mailjet.NewSMTPClientMock(true)
-	httpClientMocked.SendMailV31Func = func(req *http.Request) (*http.Response, error) {
-		responseRecorder := httptest.NewRecorder()
-		responseRecorder.Write([]byte(`{"Messages": []}`))
-		return responseRecorder.Result(), nil
-	}
+	httpClientMocked.SendMailV31Func = mockSendMailFunc(false)
 	app.mailjetClient = mailjet.NewClient(httpClientMocked, smtpClientMocked, "custom")
 
 	contact := &contact{
-		email:   "email@email.com",
+		email:   "georges.abitbol@email.com",
 		name:    "Georges Abitbol",
-		subject: "L'homme le plus classe du monde",
-		message: "lorem",
+		subject: "Important message",
+		message: "Hello",
 	}
 	err := app.sendMail(contact)
 	is.NoErr(err)
+
+	httpClientMocked.SendMailV31Func = mockSendMailFunc(true)
+	err = app.sendMail(contact)
+	is.True(err != nil)
 }
