@@ -32,7 +32,7 @@ func newMailjetClientMock(success bool) *mailjet.Client {
 
 func TestSendMail(t *testing.T) {
 	is := is.New(t)
-	app := newApplication()
+	app := newMockApplication()
 	contact := &contact{
 		email:   "georges.abitbol@email.com",
 		name:    "Georges Abitbol",

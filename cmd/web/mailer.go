@@ -8,21 +8,22 @@ func (app *application) sendMail(contact *contact) error {
 	messagesInfo := []mailjet.InfoMessagesV31{
 		mailjet.InfoMessagesV31{
 			From: &mailjet.RecipientV31{
-				Email: "alexandre.delplacemille@gmail.com",
-				Name:  "Alexandre",
+				Email: app.email,
+				Name:  app.email,
 			},
 			To: &mailjet.RecipientsV31{
 				mailjet.RecipientV31{
-					Email: "alexandre.delplacemille@gmail.com",
-					Name:  "Alexandre",
+					Email: app.email,
+					Name:  app.email,
 				},
 			},
-			Subject: "Message from adelplace.fr",
+			Subject: "Message from Mailjet API Relay",
 			HTMLPart: `
 			<ul>
-				<li><b>Email :</b> ` + contact.email + `</li>
-				<li><b>Sujet :</b> ` + contact.subject + `</li>
-				<li><b>Message :</b> ` + contact.message + `</li>
+				<li><b>Email:</b> ` + contact.email + `</li>
+				<li><b>Name:</b> ` + contact.name + `</li>
+				<li><b>Sujet:</b> ` + contact.subject + `</li>
+				<li><b>Message:</b> ` + contact.message + `</li>
 			</ul>`,
 			CustomID: "DefaultAppId",
 		},

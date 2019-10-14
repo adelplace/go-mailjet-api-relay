@@ -31,7 +31,7 @@ func mockCaptchaRequest(app *application, success bool) *httptest.Server {
 func TestCaptcha(t *testing.T) {
 	is := is.New(t)
 
-	app := newApplication()
+	app := newMockApplication()
 
 	serverSuccess := mockCaptchaRequest(app, true)
 	defer serverSuccess.Close()

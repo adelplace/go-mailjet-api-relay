@@ -11,6 +11,10 @@ import (
 	"github.com/matryer/is"
 )
 
+func newMockApplication() *application {
+	return newApplication("", "", "", "")
+}
+
 func sendEndpointRequest(app *application, is *is.I, method string, data *url.Values) (*response, *httptest.ResponseRecorder) {
 	req := httptest.NewRequest(method, "/", strings.NewReader(data.Encode()))
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
@@ -58,7 +62,7 @@ func TestCompleteSend(t *testing.T) {
 	data.Add("subject", "Very important message")
 	data.Add("message", "Hello")
 
-	app := newApplication()
+	app := newMockApplication()
 
 	serverSuccess := mockCaptchaRequest(app, true)
 	defer serverSuccess.Close()

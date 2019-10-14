@@ -10,11 +10,9 @@ type captcha struct {
 	Response string `json:"response"`
 }
 
-const captchaSecret = "secret"
-
 func (app *application) checkCaptcha(captchaResponse string) (response bool) {
 	captcha := captcha{
-		Secret:   captchaSecret,
+		Secret:   app.recaptchaSecret,
 		Response: captchaResponse,
 	}
 	resp, err := app.httpClient.Get(fmt.Sprintf(app.reCaptchaURL, captcha.Secret, captcha.Response))
