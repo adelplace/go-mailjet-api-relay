@@ -1,7 +1,7 @@
 # Go Mailjet API Relay
 
-A simple API relay to send mail with mailjet
-The idea behind this project is to have a ready to work API hidding your mailjet key on which you can plug your front app without worring about implementing a backend.
+A simple API relay to send mail with mailjet.
+The idea behind this project is to have a ready to work API hidding your mailjet key on which you can plug your front app without worrying about implementing a backend.
 
 [![Build Status](https://travis-ci.com/adelplace/go-mailjet-api-relay.svg?branch=master)](https://travis-ci.com/adelplace/go-mailjet-api-relay)
 
@@ -11,7 +11,7 @@ You can deploy this app everywhere you want using docker.
 
 ### Prerequisites
 
-This project use google recpatcha service to protect you from robots and spammers so you will need :
+This project use google recaptcha service to protect you from robots and spammers so you will need :
 - A google recaptcha account
 - A Mailjet account
 - Docker installed on your server
@@ -25,8 +25,7 @@ You will need some mandatory parameters to launch the app
 | RECAPTCHA_SECRET | Your recpatcha secret from https://www.google.com/recaptcha/admin |
 | MAILJET_PRIVATE_KEY | Your mailjet private key from https://app.mailjet.com/account/api_keys |
 | MAILJET_PUBLIC_KEY | Your mailjet public key from https://app.mailjet.com/account/api_keys |
-| EMAIL | The email that will send the mail (must be configured in mailjet). Usually your own mail |
-
+| EMAIL | The email that will send the mail (must be configured in mailjet). Usually your own email |
 
 #### Using docker
 
