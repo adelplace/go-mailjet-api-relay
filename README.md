@@ -96,7 +96,7 @@ The only one that is required is "g-recaptcha-response". If you don't send the o
 | subject | Subject of the contact |
 | message | Message of the contact |
 
-So a curl request to send and email with the API would be something like
+So a curl request to send an email with the API would be something like
 
 ```
 curl --request POST \
@@ -111,7 +111,7 @@ The API return a json object that contain the status of your request
 
 ```json
 {
-  "status": false|true,
+  "success": false|true,
   "message": "Example message",
   "code": "example_error_code"
 }
