@@ -65,7 +65,7 @@ docker-compose up -d
 
 #### Using binaries
 
-First you need to clone and build the project
+First you need to clone and build the project. Be sure to have a go version installed and up to date on your computer
 
 ```
 git clone ...
@@ -85,7 +85,28 @@ export EMAIL="..."
 
 ### Usage
 
-...
+#### Return codes
+
+The API return a json object that contain the status of your request
+
+```json
+{
+  "status": false|true,
+  "message": "Example message",
+  "code": "example_error_code"
+}
+```
+
+Here are the different codes that you can get from the API
+
+| Status | Code    | Description |
+| ------ | ------- | ----------- |
+| 200    | success | The mail has been successfully delivred to Mailjet |
+| 405    | method_not_allowed | Only POST requests are allowed |
+| 400    | invalid_data | The sent data are invalid |
+| 400    | no_captcha | The "g-recaptcha-response" parameter is missing |
+| 400    | invalid_captcha | The captcha response is invalid/expired |
+| 400    | mailjet_error | Mailjet returned an error |
 
 ## Running the tests
 
