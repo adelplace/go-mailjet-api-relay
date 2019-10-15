@@ -1,6 +1,7 @@
 # Go Mailjet API Relay
 
 A simple API relay to send mail with mailjet
+The idea behind this project is to have a ready to work API hidding your mailjet key on which you can plug your front app without worring about implementing a backend.
 
 [![Build Status](https://travis-ci.com/adelplace/go-mailjet-api-relay.svg?branch=master)](https://travis-ci.com/adelplace/go-mailjet-api-relay)
 
@@ -16,6 +17,16 @@ This project use google recpatcha service to protect you from robots and spammer
 - Docker installed on your server
 
 ### Installing
+
+You will need some mandatory parameters to launch the app
+
+| Parameter | Description |
+| --------- | ----------- |
+| RECAPTCHA_SECRET | Your recpatcha secret from https://www.google.com/recaptcha/admin |
+| MAILJET_PRIVATE_KEY | Your mailjet private key from https://app.mailjet.com/account/api_keys |
+| MAILJET_PUBLIC_KEY | Your mailjet public key from https://app.mailjet.com/account/api_keys |
+| EMAIL | The email that will send the mail (must be configured in mailjet). Usually your own mail |
+
 
 #### Using docker
 
@@ -40,19 +51,10 @@ services:
     ports:
       - "80:80"
     environment:
-      RECAPTCHA_SECRET: ${RECAPTCHA_SECRET}
-      MAILJET_PRIVATE_KEY: ${MAILJET_PRIVATE_KEY}
-      MAILJET_PUBLIC_KEY: ${MAILJET_PUBLIC_KEY}
-      EMAIL: ${EMAIL}
-```
-
-And a .env file
-
-```
-RECAPTCHA_SECRET: "..."
-MAILJET_PRIVATE_KEY: "..."
-MAILJET_PUBLIC_KEY: "..."
-EMAIL: "..."
+      RECAPTCHA_SECRET: "..."
+      MAILJET_PRIVATE_KEY: "..."
+      MAILJET_PUBLIC_KEY: "..."
+      EMAIL: "..."
 ```
 
 Then run the container
