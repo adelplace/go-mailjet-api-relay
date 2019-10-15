@@ -4,8 +4,6 @@ A simple API relay to send mail with mailjet
 
 [![Build Status](https://travis-ci.com/adelplace/go-mailjet-api-relay.svg?branch=master)](https://travis-ci.com/adelplace/go-mailjet-api-relay)
 
-## DISCLAIMER This README is still WIP. More coming soon ;)
-
 ## Getting Started
 
 You can deploy this app everywhere you want using docker. 
@@ -84,6 +82,26 @@ export EMAIL="..."
 ```
 
 ### Usage
+
+You need to send few parameters to send your mail. 
+The only one that is required is "g-recaptcha-response". If you don't send the other parameters, they will be replaced by an empty strings.
+
+| Parameter | Description |
+| --------- | ----------- |
+| g-recaptcha-response | The token from the google recaptcha response |
+| email | Email of the contact |
+| name | Name of the contact |
+| subject | Subject of the contact |
+| message | Message of the contact |
+
+So a curl request to send and email with the API would be something like
+
+```
+curl --request POST \
+  --url http://localhost:8080 \
+  --header 'Content-Type: application/x-www-form-urlencoded' \
+  --data 'g-recaptcha-response=my_captcha_response&name=my_name&subject=my_subject&message=my_message&email=my_email'
+```
 
 #### Return codes
 
