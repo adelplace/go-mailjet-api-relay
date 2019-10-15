@@ -32,6 +32,7 @@ You will need some mandatory parameters to launch the app
 
 ```
 docker run --rm -d \
+  -p 8080:80
   -e RECAPTCHA_SECRET="..." \
   -e MAILJET_PRIVATE_KEY="..." \
   -e MAILJET_PUBLIC_KEY="..." \
@@ -49,7 +50,7 @@ services:
   go-mailjet-api-relay:
     image: alexandredelplace/go-mailjet-api-relay
     ports:
-      - "80:80"
+      - "8080:80"
     environment:
       RECAPTCHA_SECRET: "..."
       MAILJET_PRIVATE_KEY: "..."
